@@ -44,7 +44,7 @@
 .gold-frame{border:1px solid transparent;border-image:var(--gold-grad) 1}
 /* ── INTRO (estilo referencia: logo + nombres completos) ── */
 .intro-card{position:relative}
-.intro-logo{display:block;width:clamp(150px,46vw,200px);height:auto;margin:0 auto 8px;filter:drop-shadow(0 6px 18px rgba(69,105,149,.18))}
+.intro-logo{display:block;width:clamp(138px,40vw,178px);height:auto;margin:0 auto 4px;filter:drop-shadow(0 6px 18px rgba(69,105,149,.18))}
 .intro-names{font-size:clamp(31px,8.4vw,44px)!important;line-height:1.12;margin:0}
 .intro-amp{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:32px;color:#5c81b5;line-height:1;margin:6px 0;display:block}
 .intro-corner{position:absolute;width:84px;height:84px;pointer-events:none;opacity:.7;z-index:0}
@@ -118,7 +118,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 .hero-date{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:21px;letter-spacing:4px;color:#d4edfe;margin-top:22px;display:block;text-shadow:0 1px 10px rgba(0,0,0,.7)}
 
 /* ── CARD ── */
-.card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:36px 28px;position:relative;margin:0 4px}
+.card{background:var(--card) url('tex-emboss.jpg') center/cover;border:1px solid var(--border);border-radius:4px;padding:36px 28px;position:relative;margin:0 4px}
 .card::before{content:'';position:absolute;inset:10px;border:1px solid transparent;border-image:var(--gold-grad) 1;pointer-events:none}
 
 /* ── COUNTDOWN ── */
@@ -132,14 +132,14 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 
 /* ── FAMILIARES ── */
 .fam-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
-.fam-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px 14px;text-align:center;position:relative}
+.fam-card{background:var(--card) url('tex-linen.jpg') center/cover;border:1px solid var(--border);border-radius:4px;padding:24px 14px;text-align:center;position:relative}
 .fam-card::before{content:'';position:absolute;inset:8px;border:1px solid transparent;border-image:var(--gold-grad) 1;pointer-events:none}
 .fam-role-lbl{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:15px;letter-spacing:.05em;color:var(--gold);display:block;margin-bottom:12px}
 .fam-name{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:21px;letter-spacing:.02em;color:var(--text);line-height:1.4;display:block}
 .fam-and{display:flex;align-items:center;gap:8px;margin:6px 0}
 .fam-and-line{flex:1;height:1px;background:var(--border)}
 .fam-and-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent)}
-.fam-padrinos{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px 22px;text-align:center;position:relative;margin-top:14px}
+.fam-padrinos{background:var(--card) url('tex-emboss.jpg') center/cover;border:1px solid var(--border);border-radius:4px;padding:24px 22px;text-align:center;position:relative;margin-top:14px}
 .fam-padrinos::before{content:'';position:absolute;inset:8px;border:1px solid transparent;border-image:var(--gold-grad) 1;pointer-events:none}
 
 /* ── UBICACION ── */
@@ -211,13 +211,13 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 
 /* ── HOTELES ── */
 .hotel-grid{display:flex;flex-direction:column;gap:14px;margin-top:28px;max-width:380px;margin-left:auto;margin-right:auto}
-.hotel-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:0;text-align:center;position:relative;overflow:hidden}
+.hotel-card{background:var(--card) url('tex-fiber.jpg') center/cover;border:1px solid var(--border);border-radius:4px;padding:0;text-align:center;position:relative;overflow:hidden}
 .hotel-card::before{content:'';position:absolute;inset:0;border:1px solid var(--border-light);pointer-events:none;z-index:1;border-radius:4px}
 .hotel-img{width:100%;height:180px;background-size:cover;background-position:center;border-radius:4px 4px 0 0}
 .hotel-name{font-family:'Pinyon Script',cursive;font-size:32px;color:var(--dark);line-height:1.2;margin:18px 0 14px;padding:0 16px}
 
 /* ── RSVP (formato boda-jennifer adaptado a L&E) ── */
-.rsvp-card{max-width:480px;margin:24px auto 0;background:rgba(255,255,255,.92);border:1px solid rgba(69,105,149,.38);padding:clamp(34px,5vw,52px) clamp(22px,4vw,40px);position:relative;box-shadow:0 18px 48px rgba(51,40,30,.08),0 4px 20px rgba(69,105,149,.12)}
+.rsvp-card{max-width:480px;margin:24px auto 0;background:#fff url('tex-emboss.jpg') center/cover;border:1px solid rgba(69,105,149,.38);padding:clamp(34px,5vw,52px) clamp(22px,4vw,40px);position:relative;box-shadow:0 18px 48px rgba(51,40,30,.08),0 4px 20px rgba(69,105,149,.12)}
 .rsvp-card::before{content:'';position:absolute;inset:9px;border:1px solid rgba(69,105,149,.22);pointer-events:none}
 .rsvp-corner{position:absolute;width:44px;height:44px;pointer-events:none}
 .rsvp-corner--tl{top:0;left:0}
@@ -382,11 +382,11 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 .sec-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none;z-index:-1}
 
 /* ── INVITACIÓN VERSE ── */
-.invite-verse{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(14.5px,3.6vw,16px);line-height:1.85;color:var(--text);text-align:center;opacity:.85;max-width:340px;margin:28px auto 0;padding:30px 8px 22px;border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);position:relative}
+.invite-verse{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(14.5px,3.6vw,16px);line-height:1.7;color:var(--text);text-align:center;opacity:.85;max-width:340px;margin:18px auto 0;padding:22px 8px 16px;border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);position:relative}
 .invite-verse::before{content:'\201C';position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-family:'Pinyon Script',cursive;font-size:58px;color:var(--gold);opacity:.28;line-height:1;pointer-events:none}
 .invite-verse p{margin:0 auto;max-width:320px}
-.invite-verse p + p{margin-top:14px}
-.invite-verse-rut{font-family:'Pinyon Script',cursive!important;font-style:normal!important;font-size:clamp(22px,5.4vw,26px)!important;color:#2c4670!important;line-height:1.45!important;opacity:1!important;letter-spacing:.01em;margin-bottom:18px!important;padding-bottom:14px;border-bottom:1px solid var(--border-light);max-width:300px!important}
+.invite-verse p + p{margin-top:10px}
+.invite-verse-rut{font-family:'Pinyon Script',cursive!important;font-style:normal!important;font-size:clamp(22px,5.4vw,26px)!important;color:#2c4670!important;line-height:1.45!important;opacity:1!important;letter-spacing:.01em;margin-bottom:12px!important;padding-bottom:10px;border-bottom:1px solid var(--border-light);max-width:300px!important}
 .invite-verse-end{font-weight:500}
 
 /* ── COUNTDOWN GLOW ── */
@@ -464,7 +464,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 #regalos::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 50% 12%,rgba(69,105,149,.08) 0%,transparent 70%)}
 .gift-icon-wrap{display:flex;justify-content:center;margin:8px 0 22px}
 .gift-icon-wrap svg{opacity:.9;filter:drop-shadow(0 2px 10px rgba(69,105,149,.3))}
-.gift-frame{border:1px solid transparent;border-image:var(--gold-grad) 1;padding:32px 26px 34px;max-width:330px;margin:0 auto;position:relative;background:rgba(255,255,255,.5)}
+.gift-frame{border:1px solid transparent;border-image:var(--gold-grad) 1;padding:32px 26px 34px;max-width:330px;margin:0 auto;position:relative;background:#fff url('tex-linen.jpg') center/cover}
 .gift-frame::before{content:'';position:absolute;inset:7px;border:1px solid rgba(69,105,149,.22);pointer-events:none}
 .g-corner{position:absolute;width:12px;height:12px;border-color:var(--gold);border-style:solid;border-width:0;z-index:1}
 .g-corner.tl{top:3px;left:3px;border-top-width:1.5px;border-left-width:1.5px}
@@ -481,7 +481,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
 .album-icon-wrap{display:flex;justify-content:center;margin:8px 0 16px}
 .album-icon-wrap svg{opacity:.85;filter:drop-shadow(0 2px 10px rgba(69,105,149,.22))}
 .qr-premium{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:26px}
-.qr-outer{position:relative;padding:18px;background:#fffdf8;border:1px solid transparent;border-image:var(--gold-grad) 1;box-shadow:0 16px 44px rgba(51,40,30,.18);display:inline-block}
+.qr-outer{position:relative;padding:18px;background:#fff url('tex-fiber.jpg') center/cover;border:1px solid transparent;border-image:var(--gold-grad) 1;box-shadow:0 16px 44px rgba(51,40,30,.18);display:inline-block}
 .qr-outer::before{content:'';position:absolute;inset:6px;border:1px solid rgba(69,105,149,.2);pointer-events:none}
 .qr-img{display:block;width:188px;height:188px;position:relative;z-index:1}
 .qr-c{position:absolute;width:13px;height:13px;border-color:var(--gold);border-style:solid;border-width:0;z-index:2}
@@ -561,12 +561,11 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
     <h1 class="heading intro-names stagger-child">Samahi Yasareth<br>Tlapale Ramírez</h1>
     <span class="intro-amp stagger-child">&amp;</span>
     <p class="heading intro-names stagger-child">Luis Antonio<br>Ahuatzi Reyes</p>
-    <span class="eyebrow stagger-child" style="margin-top:22px;font-size:12.5px;letter-spacing:.2em">Tenemos el honor de invitarles<br>a celebrar nuestra unión en matrimonio</span>
-    <div class="orn bot stagger-child" style="margin-top:18px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
-    <p class="stagger-child" style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);line-height:1.7;margin-top:16px">Sábado 26 de Diciembre de 2026</p>
+    <span class="eyebrow stagger-child" style="margin-top:14px;font-size:12.5px;letter-spacing:.2em">Tenemos el honor de invitarles<br>a celebrar nuestra unión en matrimonio</span>
+    <div class="orn bot stagger-child" style="margin-top:12px"><div class="orn-line"></div><div class="orn-diamond-sm"></div><div class="orn-diamond"></div><div class="orn-diamond-sm"></div><div class="orn-line"></div></div>
+    <p class="stagger-child" style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);line-height:1.7;margin-top:10px">Sábado 26 de Diciembre de 2026</p>
     <div class="invite-verse stagger-child">
       <p class="invite-verse-rut">A dónde tú vayas, iré yo.<br>Dónde tú vivas, viviré yo.<br>Tu pueblo será mi pueblo<br>y tu Dios será mi Dios.</p>
-      <p>Porque el amor no solamente es sentir, es elegir.</p>
       <p>El amor no promete perfección, promete permanencia, promete quedarse cuando todos se van.</p>
       <p class="invite-verse-end">Promete elegir el mismo corazón una vez más, porque cuando Dios une dos corazones con verdad, ni el tiempo, ni la distancia los podrá separar.</p>
     </div>
@@ -839,10 +838,10 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',ser
         <div class="wheel-card"><img src="foto2.jpg" alt="Yasareth &amp; Luis"></div>
         <div class="wheel-card"><img src="foto3.jpg" alt="Yasareth &amp; Luis"></div>
         <div class="wheel-card"><img src="foto4.jpg" alt="Yasareth &amp; Luis"></div>
+        <div class="wheel-card"><img src="foto5.jpg" alt="Yasareth &amp; Luis"></div>
         <div class="wheel-card"><img src="foto1.jpg" alt="Yasareth &amp; Luis"></div>
         <div class="wheel-card"><img src="foto2.jpg" alt="Yasareth &amp; Luis"></div>
         <div class="wheel-card"><img src="foto3.jpg" alt="Yasareth &amp; Luis"></div>
-        <div class="wheel-card"><img src="foto4.jpg" alt="Yasareth &amp; Luis"></div>
       </div>
     </div>
     <p class="gal-hint rv">Arrastra para girar</p>
