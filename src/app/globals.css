@@ -1,0 +1,980 @@
+@import "tailwindcss";
+
+:root {
+  /* Paleta elegida por Yasareth & Luis:
+     #FFFFFF blanco · #d4edfe azul hielo · #85a2cb / #92b2cb azul empolvado
+     #4A7BB7 azul acero · #996515 ORO (el metal de toda la invitacion).
+     El cliente pidio que cada detalle metalico fuera oro, no plata.
+     Se conservan los NOMBRES de token del template (olive/terracotta/green)
+     para no romper referencias; solo cambian los VALORES: donde el template
+     ponia verde, ahora va azul. Los tonos de TEXTO van oscurecidos respecto
+     al hex del cliente para cumplir contraste 4.5:1 sobre el marfil; los hex
+     puros se usan en los acentos decorativos. */
+  --bg-cream: #F8F4EC;        /* marfil casi blanco (fondo/papel) */
+  --olive-primary: #16325C;   /* marino suave: nombres y titulos */
+  --ink-dark: #1E2A38;        /* tinta azulada (texto de cuerpo) */
+  --terracotta: #2F5480;      /* azul acero profundo (texto secundario) */
+  --olive-soft: #41688F;      /* azul #4A7BB7 oscurecido (labels/texto) */
+  --gold-antique: #8a5c13;    /* oro #996515 oscurecido para texto (5.1:1) */
+  --beige: #D8DFE8;           /* azul grisaceo claro (bordes/divisores) */
+
+  /* Hex puros del cliente — solo para ornamento, nunca para texto pequeno */
+  --green-deco: #82C8E5;
+  --rose-deco: #6F8FAF;
+  --champagne: #F3DFAE;
+
+  /* Azul en dos profundidades: el de relleno de botones lleva texto marfil
+     encima (8:1) y el de linea se usa en ramas y filetes. */
+  --green-deep: #2F5480;
+  --green-line: #6F8FAF;
+  /* Azul legible como texto sobre el marfil (5.6:1) */
+  --rose-ink: #3C6390;
+
+  /* Oro con acabado metalico real (highlight -> base -> sombra) */
+  --champagne-foil: linear-gradient(
+    115deg,
+    #6b4408 0%,
+    #996515 14%,
+    #c99433 30%,
+    #eccf7f 44%,
+    #FBEEC0 50%,
+    #d3a341 58%,
+    #996515 76%,
+    #6b4408 100%
+  );
+}
+
+@theme inline {
+  --color-cream: var(--bg-cream);
+  --color-olive: var(--olive-primary);
+  --color-ink: var(--ink-dark);
+  --color-terracotta: var(--terracotta);
+  --color-olive-soft: var(--olive-soft);
+  --color-gold: var(--gold-antique);
+  --color-beige: var(--beige);
+  --color-green-deco: var(--green-deco);
+  --color-rose-deco: var(--rose-deco);
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--bg-cream);
+  color: var(--ink-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fondo: onix verde salvia con vetas champan, en la paleta de la boda.
+   Va en una capa fija propia en vez de background-attachment: fixed — se ve
+   igual (no se mueve al hacer scroll) pero el navegador la pinta una sola
+   vez, sin recomponer los ~11.000px de la invitacion.
+   Sin blend: aqui SI queremos que se lea el verde. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--bg-cream);
+  background-image: url("/fondo-marmol.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+/* En un monitor ancho el marmol vertical (1400px) se estiraba y salian bandas
+   y grano; de 900px en adelante se sirve una version apaisada. */
+@media (min-width: 900px) {
+  body::before { background-image: url("/fondo-marmol-wide.jpg"); }
+}
+
+/* Velo crema encima del marmol: sube el contraste de las tarjetas contra el
+   fondo sin apagar el verde. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    rgba(248, 244, 236, 0.40) 0%,
+    rgba(248, 244, 236, 0.20) 55%,
+    rgba(248, 244, 236, 0.36) 100%
+  );
+  pointer-events: none;
+}
+
+::selection {
+  background: var(--olive-soft);
+  color: var(--bg-cream);
+}
+
+.font-script { font-family: var(--font-script), cursive; }
+/* Serif elegante Cormorant para textos de datos/cuerpo */
+.font-serif { font-family: var(--font-serif), serif; font-weight: 500; letter-spacing: 0.01em; }
+
+.font-sans-label {
+  font-family: var(--font-sans), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+/* ── Card shapes ── */
+
+.card-base {
+  position: relative;
+  width: 92vw;
+  max-width: 440px;
+  margin: 0 auto 2.5rem;
+  padding: 3rem 2rem;
+  background-color: var(--bg-cream);
+  background-image: url("/paper-linen.jpg");
+  background-blend-mode: luminosity;
+  background-size: cover;
+  background-position: center;
+  border-radius: 3px;
+  box-shadow:
+    0 3px 6px rgba(30,42,56,0.14),
+    0 14px 34px rgba(30,42,56,0.20),
+    0 28px 60px rgba(30,42,56,0.12);
+}
+
+/* Marco doble elegante: línea dorada exterior + hairline olivo interior */
+.card-base::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  border: 1.4px solid var(--gold-antique);
+  border-radius: 2px;
+}
+.card-base::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+  border: 0.75px solid var(--green-line);
+  opacity: 0.75;
+  border-radius: 1px;
+}
+
+/* Texture variants for depth & variety */
+.tex-aged { background-image: url("/paper-aged.jpg"); }
+.tex-fiber { background-image: url("/paper-fiber.jpg"); }
+.tex-count { background-image: url("/paper-count.jpg"); }
+/* Papel con relieve floral (recorte del sobre) — atenuado para legibilidad */
+.tex-emboss {
+  background-image: linear-gradient(rgba(248,244,236,0.34), rgba(248,244,236,0.34)), url("/paper-emboss.jpg");
+  background-size: cover;
+  background-position: center;
+}
+.tex-beige {
+  background-image: url("/paper-beige.jpg");
+}
+
+/* Card antes terracota → ahora marfil claro */
+.card-terracotta {
+  background-color: var(--bg-cream);
+  background-image: url("/paper-fiber.jpg");
+  background-blend-mode: luminosity;
+  background-size: cover;
+  background-position: center;
+  color: var(--ink-dark);
+}
+.card-terracotta::before { border-color: var(--gold-antique); }
+.card-terracotta::after { border-color: var(--green-line); opacity: 0.7; }
+
+/* Arch top */
+.card-arch {
+  border-radius: 50% 50% 3px 3px / 16% 16% 0 0;
+  padding-top: 3.25rem;
+}
+.card-arch::before {
+  border-radius: 50% 50% 2px 2px / 15% 15% 0 0;
+}
+.card-arch::after {
+  border-radius: 50% 50% 1px 1px / 14% 14% 0 0;
+}
+
+/* Badge / shield */
+.card-badge {
+  clip-path: polygon(
+    50% 0%, 100% 8%, 100% 85%,
+    85% 100%, 50% 92%, 15% 100%,
+    0% 85%, 0% 8%
+  );
+  padding: 2.5rem 2rem 3rem;
+  text-align: center;
+}
+.card-badge::before { display: none; }
+
+/* Card antes olivo oscuro → ahora marfil claro */
+.card-olive {
+  background-color: var(--bg-cream);
+  background-image: url("/paper-linen.jpg");
+  background-blend-mode: luminosity;
+  background-size: cover;
+  background-position: center;
+  color: var(--ink-dark);
+}
+.card-olive::before { border-color: var(--gold-antique); }
+.card-olive::after { border-color: var(--green-line); opacity: 0.7; }
+
+/* Mini envelope card */
+.card-mini-envelope {
+  overflow: visible;
+  /* El contenido de AnimatedCard va dentro de un wrapper position:relative, asi
+     que la solapa se posiciona respecto a EL, no respecto a la tarjeta: con
+     top:0 aparecia 76px por debajo del borde y no se leia como solapa. Estos
+     dos valores la devuelven al borde real. */
+  --flap-top: 4.25rem;
+  --flap-inset-x: 2rem;
+  padding-top: var(--flap-top);
+}
+.card-mini-envelope .mini-flap {
+  position: absolute;
+  top: calc(-1 * var(--flap-top));
+  left: calc(-1 * var(--flap-inset-x));
+  right: calc(-1 * var(--flap-inset-x));
+  height: 104px;
+  background-color: #EAEFF4;
+  background-image: url("/paper-fiber.jpg");
+  background-blend-mode: luminosity;
+  background-size: cover;
+  /* Forma de solapa de sobre real: esquinas con un poco de altura (no llegan a punta cero)
+     para que tapen por completo el marco doble que pasa por debajo. */
+  clip-path: polygon(0 0, 100% 0, 100% 16px, 50% 100%, 0 16px);
+  /* z-index NEGATIVO: al ser position:absolute, la solapa se pintaria encima
+     del texto aunque venga antes en el DOM, y tapaba el titulo "Hospedaje".
+     En negativo queda detras del contenido de la tarjeta, y como toda esa
+     capa va por encima del marco, la solapa lo sigue cubriendo. */
+  z-index: -1;
+  box-shadow: 0 2px 6px rgba(30,42,56,0.15);
+}
+.card-mini-envelope.flap-terracotta .mini-flap {
+  background-color: #EAEFF4;
+  background-image: url("/paper-fiber.jpg");
+  background-blend-mode: luminosity;
+}
+/* El marco doble se extiende normal (hasta las esquinas reales de la tarjeta);
+   la solapa (z-index superior) lo cubre donde se superponen, dando el efecto
+   de que el marco "pasa por debajo" del sobre. */
+.card-mini-envelope::before,
+.card-mini-envelope::after {
+  z-index: 1;
+}
+
+/* Oval frame (for hero) */
+.oval-frame {
+  border: 1px solid var(--beige);
+  border-radius: 50%;
+  padding: 3rem 2rem;
+  aspect-ratio: 3/4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Ornate double-line frame with corner accents */
+.ornate-card {
+  position: relative;
+  padding: 2.75rem 2rem !important;
+}
+.ornate-card::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border: 1px solid var(--gold-antique);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.ornate-card::after {
+  content: '';
+  position: absolute;
+  inset: 13px;
+  border: 0.5px solid var(--olive-soft);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Fleuron ornament divider */
+.fleuron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.6rem auto;
+  font-size: 1.35rem;
+}
+.fleuron::before,
+.fleuron::after {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--green-line), transparent);
+  opacity: 0.85;
+}
+
+/* ── Carrusel de recuerdos ── */
+/* El polaroid medía 240px fijos: en la tarjeta de 440px de un monitor se
+   veia diminuto. Crece con la pantalla y las flechas se separan con el. */
+.gal-marco { width: 240px; }
+@media (min-width: 900px) {
+  .gal-marco { width: 330px; }
+  .gal-marco .carousel-arrow { width: 38px; height: 38px; }
+  .gal-marco .carousel-arrow svg { width: 15px; height: 15px; }
+}
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-antique);
+  background: rgba(249,247,242,0.92);
+  color: var(--olive-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(60,55,50,0.2);
+  transition: all 0.2s ease;
+}
+.carousel-arrow:hover { background: var(--olive-primary); color: var(--bg-cream); }
+
+.lb-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 210;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.12);
+  color: #fdfdfb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.lb-arrow:hover { background: rgba(255,255,255,0.24); }
+
+/* ── Utilities ── */
+
+.divider {
+  width: 70px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--green-line), transparent);
+  margin: 0.75rem auto;
+  opacity: 0.8;
+}
+
+.divider-gold {
+  width: 70px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--green-line), var(--gold-antique), var(--green-line), transparent);
+  margin: 0.75rem auto;
+  opacity: 0.85;
+}
+
+.btn-map {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.2rem;
+  border: 1px solid var(--green-deep);
+  color: var(--bg-cream);
+  font-family: var(--font-serif), serif;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  background: var(--green-deep);
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(22,42,70,0.22);
+  cursor: pointer;
+}
+.btn-map:hover {
+  background: var(--olive-primary);
+  border-color: var(--olive-primary);
+  color: var(--bg-cream);
+}
+
+/* Variante de la misma familia: contorno verde sobre el papel */
+.btn-olive {
+  background: transparent;
+  border-color: var(--green-deep);
+  color: var(--green-deep);
+  box-shadow: none;
+}
+.btn-olive:hover {
+  background: var(--green-deep);
+  color: var(--bg-cream);
+}
+
+/* ── Vinyl music player (disco de vinil) ── */
+.vinyl-btn {
+  position: fixed; bottom: 20px; right: 20px; z-index: 50;
+  width: 68px; height: 68px; border-radius: 50%; padding: 0;
+  border: none; cursor: pointer; background: transparent;
+  opacity: 0; transform: scale(.6); pointer-events: none;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .35s ease;
+  box-shadow: 0 4px 18px rgba(30,42,56,.35), 0 0 0 1px rgba(150,142,131,.15);
+}
+.vinyl-btn.is-ready { opacity: 1; transform: scale(1); pointer-events: auto; }
+.vinyl-btn:hover { transform: scale(1.1); }
+.vinyl-spin { width: 100%; height: 100%; border-radius: 50%; position: relative; }
+.vinyl-btn.is-playing .vinyl-spin { animation: vinylSpin 1.8s linear infinite; }
+@keyframes vinylSpin { to { transform: rotate(360deg); } }
+.vinyl-disc {
+  width: 100%; height: 100%; border-radius: 50%; overflow: hidden; position: relative;
+  background:
+    radial-gradient(circle, #3f3b36 4%, transparent 4.5%),
+    radial-gradient(circle, #c9c2b6 0%, #a69d92 17%, #8b837a 19%, transparent 19.5%),
+    repeating-radial-gradient(circle,
+      transparent 20%, rgba(245,240,231,.06) 20.8%, transparent 21.5%,
+      transparent 24%, rgba(245,240,231,.04) 24.8%, transparent 25.5%,
+      transparent 28%, rgba(245,240,231,.06) 28.8%, transparent 29.5%,
+      transparent 32%, rgba(245,240,231,.04) 32.8%, transparent 33.5%,
+      transparent 36%, rgba(245,240,231,.06) 36.8%, transparent 37.5%,
+      transparent 40%, rgba(245,240,231,.04) 40.8%, transparent 41.5%,
+      transparent 44%, rgba(245,240,231,.06) 44.8%, transparent 45.5%,
+      transparent 48%, rgba(245,240,231,.04) 48.8%, transparent 49.5%,
+      transparent 52%, rgba(245,240,231,.06) 52.8%, transparent 53.5%,
+      transparent 56%, rgba(245,240,231,.04) 56.8%, transparent 57.5%,
+      transparent 60%, rgba(245,240,231,.06) 60.8%, transparent 61.5%,
+      transparent 64%, rgba(245,240,231,.04) 64.8%, transparent 65.5%,
+      transparent 68%, rgba(245,240,231,.06) 68.8%, transparent 69.5%,
+      transparent 72%, rgba(245,240,231,.04) 72.8%, transparent 73.5%,
+      transparent 76%, rgba(245,240,231,.06) 76.8%, transparent 77.5%,
+      transparent 80%, rgba(245,240,231,.04) 80.8%, transparent 81.5%,
+      transparent 84%, rgba(245,240,231,.06) 84.8%, transparent 85.5%,
+      transparent 88%, rgba(245,240,231,.04) 88.8%, transparent 89.5%,
+      transparent 92%, rgba(245,240,231,.06) 92.8%, transparent 93.5%,
+      transparent 96%, rgba(245,240,231,.04) 96.8%, transparent 97.5%
+    ),
+    radial-gradient(circle, #26241f 0%, #33302a 60%, #26241f 100%);
+  box-shadow: inset 0 0 8px rgba(0,0,0,.4);
+}
+.vinyl-sheen {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: linear-gradient(135deg, transparent 30%, rgba(245,240,231,.08) 42%, rgba(245,240,231,.14) 48%, rgba(245,240,231,.08) 54%, transparent 66%);
+  pointer-events: none;
+}
+.vinyl-label-text {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-family: var(--font-script), cursive; font-size: 13px; color: #3b3028;
+  text-align: center; line-height: 1; opacity: .85; pointer-events: none; width: 26px;
+}
+.vinyl-label-text small {
+  font-family: var(--font-sans), sans-serif; font-size: 4.5px; letter-spacing: .15em;
+  display: block; margin-top: 1px; opacity: .6;
+}
+.vinyl-hole {
+  position: absolute; top: 50%; left: 50%; width: 6px; height: 6px;
+  transform: translate(-50%,-50%); border-radius: 50%; background: #3b3028;
+  box-shadow: 0 0 0 1.5px rgba(150,142,131,.5);
+}
+.vinyl-icons {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 16px; height: 16px; pointer-events: none; z-index: 2;
+}
+.vinyl-icons svg { width: 100%; height: 100%; display: block; }
+.vinyl-icon-pause { display: none; }
+.vinyl-btn.is-playing .vinyl-icon-play { display: none; }
+.vinyl-btn.is-playing .vinyl-icon-pause { display: block; }
+.vinyl-btn::after {
+  content: ""; position: absolute; inset: -5px; border-radius: 50%;
+  border: 1px solid var(--gold-antique); opacity: .3;
+  animation: vinylPulse 3s ease-in-out infinite;
+}
+.vinyl-btn.is-playing::after { animation-duration: 1.6s; }
+@keyframes vinylPulse { 0%,100% { transform: scale(1); opacity: .3; } 50% { transform: scale(1.12); opacity: .05; } }
+.vinyl-tonearm {
+  position: absolute; top: -4px; right: -2px; width: 22px; height: 32px;
+  transform-origin: top right; transform: rotate(-28deg);
+  transition: transform .6s cubic-bezier(.2,.7,.2,1); pointer-events: none; z-index: 1;
+}
+.vinyl-btn.is-playing .vinyl-tonearm { transform: rotate(-12deg); }
+.vinyl-tonearm-line {
+  position: absolute; top: 2px; right: 4px; width: 2px; height: 26px;
+  background: linear-gradient(to bottom, #8b837a, #a69d92 40%, #8b837a);
+  border-radius: 1px; transform: rotate(-5deg); transform-origin: top center;
+}
+.vinyl-tonearm-head {
+  position: absolute; bottom: 0; right: 2px; width: 5px; height: 6px;
+  background: #a69d92; border-radius: 0 0 2px 2px;
+}
+.vinyl-tonearm-pivot {
+  position: absolute; top: 0; right: 2px; width: 7px; height: 7px;
+  background: radial-gradient(circle, #c9c2b6, #8b837a); border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+
+/* ── Partículas premium de polvo dorado (delante del contenido) ── */
+.dust-layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 45;
+}
+.dust-mote {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, rgba(255,251,240,0.95), rgba(150,142,131,0.45) 55%, rgba(150,142,131,0) 75%);
+  box-shadow: 0 0 6px rgba(214,190,140,0.55), 0 0 2px rgba(255,250,235,0.8);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation-name: dustFloat, dustTwinkle;
+  animation-timing-function: ease-in-out, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+@keyframes dustFloat {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(var(--dx), var(--dy)); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes dustTwinkle {
+  0%, 100% { opacity: 0; }
+  30% { opacity: calc(var(--bright) * 0.7); }
+  50% { opacity: var(--bright); }
+  70% { opacity: calc(var(--bright) * 0.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dust-layer { display: none; }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 200ms !important;
+  }
+}
+
+/* ── Oro con acabado metálico real ──────────────────────────────────
+   Gradiente de 3 tonos (sombra → base → highlight) recortado al texto,
+   con un barrido lento que simula el reflejo del foil sobre el papel. */
+.foil {
+  background-image: var(--champagne-foil);
+  background-size: 260% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: foilSweep 7s ease-in-out infinite;
+  /* Relieve del foil con text-shadow: mismo brillo, sin capa compuesta extra. */
+  text-shadow: 0 1px 0 rgba(255, 250, 232, 0.55), 0 1px 2px rgba(74, 52, 10, 0.24);
+}
+@keyframes foilSweep {
+  0%, 100% { background-position: 8% 50%; }
+  50%      { background-position: 92% 50%; }
+}
+
+/* Hairline de oro metálico (divisores y marcos finos) */
+.foil-rule {
+  height: 1.5px;
+  border: none;
+  background-image: var(--champagne-foil);
+  background-size: 260% 100%;
+  animation: foilSweep 9s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foil, .foil-rule { animation: none; background-position: 50% 50%; }
+}
+
+/* ── Lista de notas / avisos ── */
+.note-item {
+  display: flex;
+  gap: 0.7rem;
+  text-align: left;
+  padding: 0.85rem 0;
+}
+.note-item + .note-item { border-top: 1px solid var(--beige); }
+.note-bullet {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin-top: 0.55rem;
+  border-radius: 50%;
+  background: var(--green-deco);
+  box-shadow: 0 0 0 3px rgba(130,200,229,0.28);
+}
+/* Alternan verde y rosa palo para que el ritmo no sea plano */
+.note-item:nth-child(even) .note-bullet {
+  background: var(--rose-deco);
+  box-shadow: 0 0 0 3px rgba(111,143,175,0.24);
+}
+
+/* ── Tarjeta del clima ── */
+.weather-chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 82px;
+  padding: 0.75rem 0.6rem;
+  border: 1px solid var(--green-line);
+  border-radius: 12px;
+  background: rgba(255, 253, 249, 0.55);
+}
+
+/* ── Hospedaje: carrusel lateral con foto del lugar ── */
+.hosp-carousel { position: relative; max-width: 340px; margin: 1.25rem auto 0; }
+.hosp-viewport { overflow: hidden; }
+.hosp-track { display: flex; transition: transform .45s cubic-bezier(.4,0,.2,1); }
+.hosp-slide {
+  flex: 0 0 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 2.25rem;
+}
+.hosp-photo {
+  width: 186px;
+  height: 186px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(111,143,175,0.45);
+  box-shadow: 0 12px 30px rgba(22,32,46,0.20);
+  margin-bottom: 1.15rem;
+  background: var(--bg-cream);
+}
+.hosp-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (min-width: 900px) {
+  .hosp-carousel { max-width: 400px; }
+  .hosp-photo { width: 236px; height: 236px; }
+  .hosp-arrow { top: 126px; }
+}
+.hosp-arrow {
+  position: absolute;
+  top: 101px;
+  transform: translateY(-50%);
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,253,249,0.9);
+  border: 1px solid var(--gold-antique);
+  border-radius: 50%;
+  color: var(--olive-primary);
+  z-index: 2; padding: 0; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(22,32,46,0.18);
+}
+.hosp-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+.hosp-arrow.prev { left: -6px; }
+.hosp-arrow.next { right: -6px; }
+.hosp-dots { display: flex; justify-content: center; gap: 8px; margin-top: 1.1rem; }
+.hosp-dots button {
+  width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0;
+  background: var(--olive-soft); opacity: .38; cursor: pointer;
+  transition: opacity .25s, transform .25s, width .25s;
+}
+.hosp-dots button.active { opacity: .95; width: 20px; border-radius: 4px; background: var(--olive-primary); }
+
+/* ── Lluvia de sobres: sobre que se abre + sobres cayendo ── */
+.env-rain { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.env-rain-item { position: absolute; top: -46px; will-change: transform; opacity: 0; }
+.env-stage { position: relative; z-index: 1; }
+.env-interactive {
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  outline: none; border: none; background: none; padding: 0;
+  margin: 1.25rem auto 0; opacity: 0;
+}
+.env-body {
+  perspective: 700px; position: relative;
+  width: min(250px, 66vw); aspect-ratio: 260/200;
+  filter: drop-shadow(0 10px 24px rgba(22,32,46,.20));
+}
+.env-body svg.env-svg { width: 100%; height: 100%; display: block; }
+.env-flap-wrap {
+  position: absolute; top: 23%; left: 6.9%; width: 86.2%; height: 43%;
+  transform-origin: top center; transform-style: preserve-3d;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  transition: transform .65s cubic-bezier(.4,0,.2,1);
+  pointer-events: none; z-index: 2;
+}
+.env-interactive.open .env-flap-wrap { transform: rotateX(-175deg); }
+.env-seal {
+  position: absolute; top: 52%; left: 50%; width: 23%; aspect-ratio: 1;
+  transform: translate(-50%,-50%); z-index: 3;
+  transition: opacity .35s ease, transform .5s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
+}
+.env-interactive.open .env-seal { opacity: 0; transform: translate(-50%,-50%) scale(.7); }
+.env-open-content {
+  overflow: hidden; max-height: 0; opacity: 0;
+  transition: max-height .55s .3s ease, opacity .4s .38s ease;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 0 4px; text-align: center; pointer-events: none;
+}
+.env-interactive.open .env-open-content {
+  max-height: 900px; opacity: 1; pointer-events: auto; margin-top: 1.1rem;
+}
+.env-tap-hint {
+  margin-top: .85rem; opacity: 0;
+  transition: opacity .5s ease;
+  font-family: var(--font-sans), sans-serif;
+  text-transform: uppercase; letter-spacing: .26em;
+  font-size: .72rem; font-weight: 600; color: var(--olive-soft);
+}
+.env-tap-hint.show { opacity: 1; }
+.env-interactive.open + .env-tap-hint { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .env-rain { display: none; }
+}
+
+/* ── Detalle: caja de regalo que se abre ── */
+.gb-box {
+  display: block; margin: 1.35rem auto 0; padding: 0;
+  border: none; background: none; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.gb-box svg {
+  width: min(190px, 52vw); height: auto; display: block;
+  filter: drop-shadow(0 12px 26px rgba(22,32,46,.22));
+}
+.gb-lid {
+  transform-origin: 100px 78px;
+  transition: transform .5s cubic-bezier(.34,1.4,.5,1);
+}
+.gb-box:hover .gb-lid,
+.gb-box:focus-visible .gb-lid { transform: translateY(-13px) rotate(-5deg); }
+.gb-cta {
+  display: block; margin-top: .9rem;
+  font-family: var(--font-sans), sans-serif;
+  text-transform: uppercase; letter-spacing: .26em;
+  font-size: .72rem; font-weight: 600; color: var(--olive-soft);
+}
+
+.gb-backdrop {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center; padding: 22px;
+  background: rgba(16,28,44,.62);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.gb-panel {
+  position: relative; width: 100%; max-width: 380px; text-align: center;
+  padding: 2.4rem 1.5rem 1.9rem;
+  background-color: var(--bg-cream);
+  background-image: url("/paper-linen.jpg");
+  background-blend-mode: luminosity;
+  background-size: cover;
+  border-radius: 3px;
+  box-shadow: 0 24px 60px rgba(10,20,36,.45);
+  max-height: 88dvh; overflow-y: auto;
+}
+.gb-panel::before {
+  content: ''; position: absolute; inset: 8px;
+  border: 1.3px solid var(--gold-antique); border-radius: 2px; pointer-events: none;
+}
+.gb-panel::after {
+  content: ''; position: absolute; inset: 13px;
+  border: .7px solid var(--green-line); opacity: .7; border-radius: 1px; pointer-events: none;
+}
+.gb-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--beige); background: rgba(255,255,255,.75);
+  color: var(--olive-primary); cursor: pointer; padding: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+}
+.gb-close svg { width: 15px; height: 15px; }
+.gb-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 1.05rem; padding: .9rem 1rem;
+  background: rgba(255,253,249,.72);
+  border: 1px solid var(--beige); border-radius: 12px;
+}
+.gb-copy {
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: .6rem .85rem; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--green-deep); background: transparent;
+  color: var(--green-deep);
+  font-family: var(--font-sans), sans-serif;
+  text-transform: uppercase; letter-spacing: .16em;
+  font-size: .68rem; font-weight: 600;
+  transition: background .2s, color .2s;
+}
+.gb-copy:hover { background: var(--green-deep); color: var(--bg-cream); }
+
+/* ══ Pantallas grandes ══════════════════════════════════════════════
+   La invitacion se diseno vertical. En un monitor ancho la foto de la
+   portada, que es 9:16, se ampliaba con `cover` hasta dejar solo una
+   franja central: se veia la reja y los novios quedaban fuera de cuadro.
+   De 900px en adelante se sirve un recorte apaisado de la misma foto.
+   Las fotos tambien crecen: a tamano de movil se veian diminutas en una
+   tarjeta de 440px. */
+.cover-foto {
+  background-image: url("/portada.jpg");
+  background-size: cover;
+  background-position: center 30%;
+}
+@media (min-width: 900px) {
+  .cover-foto {
+    background-image: url("/portada-wide.jpg");
+    background-position: center 46%;
+  }
+}
+
+/* ── Retrato circular del lugar (parroquia / quinta) ── */
+.lugar-foto {
+  width: 154px; height: 154px;
+  margin: 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(111,143,175,0.45);
+  box-shadow: 0 10px 26px rgba(22,32,46,0.20);
+  background: var(--bg-cream);
+}
+.lugar-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (min-width: 900px) {
+  .lugar-foto { width: 208px; height: 208px; }
+}
+
+/* ── Selector de idioma ── */
+.gate-marmol {
+  background-image: url("/fondo-marmol.jpg");
+  background-size: cover;
+  background-position: center;
+}
+@media (min-width: 900px) {
+  .gate-marmol { background-image: url("/fondo-marmol-wide.jpg"); }
+}
+.lang-btn {
+  display: block; width: 100%;
+  padding: .95rem 1rem;
+  border: 1.4px solid var(--gold-antique);
+  border-radius: 2px;
+  background: rgba(255,253,249,.7);
+  color: var(--olive-primary);
+  font-family: var(--font-serif), serif;
+  font-size: 1.35rem; font-weight: 600; letter-spacing: .06em;
+  cursor: pointer;
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+.lang-btn:hover,
+.lang-btn:focus-visible {
+  background: var(--green-deep);
+  color: var(--bg-cream);
+  border-color: var(--green-deep);
+  transform: translateY(-1px);
+}
+/* Cambiar de idioma con la invitacion ya abierta */
+.lang-switch {
+  position: fixed; top: 16px; right: 16px; z-index: 48;
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 3px; border-radius: 999px;
+  border: 1px solid rgba(140,111,67,.55);
+  background: rgba(255,253,249,.82);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 3px 12px rgba(22,32,46,.18);
+}
+.lang-switch button {
+  border: none; background: transparent; cursor: pointer;
+  padding: .34rem .62rem; border-radius: 999px;
+  font-family: var(--font-sans), sans-serif;
+  font-size: .68rem; font-weight: 600; letter-spacing: .12em;
+  color: var(--olive-soft);
+  transition: background .2s ease, color .2s ease;
+}
+.lang-switch button[aria-pressed="true"] {
+  background: var(--green-deep); color: var(--bg-cream);
+}
+
+/* ── Muro de mensajes ── */
+.msg-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-family: var(--font-serif), serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--ink-dark);
+  background-color: rgba(255, 253, 249, 0.75);
+  border: 1.5px solid var(--beige);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.25s ease;
+}
+.msg-input::placeholder { color: #8a8175; opacity: 1; }
+.msg-input:focus { border-color: var(--olive-primary); }
+
+.msg-note {
+  position: relative;
+  text-align: left;
+  padding: 1rem 1.1rem;
+  border-radius: 3px;
+  background-color: var(--bg-cream);
+  background-image: url("/paper-fiber.jpg");
+  background-blend-mode: luminosity;
+  background-size: cover;
+  box-shadow: 0 2px 6px rgba(22,32,46, 0.12), 0 8px 18px rgba(22,32,46, 0.08);
+}
+.msg-note + .msg-note { margin-top: 0.85rem; }
+.msg-note::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--gold-antique);
+  opacity: 0.35;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* ── Área táctil mínima (44×44) ───────────────────────────────────────
+   Los controles del carrusel y el crédito del pie se ven igual: solo se
+   les amplía la zona que responde al dedo, con un pseudo-elemento
+   invisible centrado. Sin esto, las flechas miden 30px y los puntos 7px,
+   por debajo del mínimo accesible. */
+.carousel-arrow::after,
+.carousel-dot::after,
+.credito-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-dot {
+  position: relative;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.credito-link {
+  position: relative;
+  display: inline-block;
+}
