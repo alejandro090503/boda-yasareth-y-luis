@@ -1,0 +1,10 @@
+[youtube] Extracting URL: https://www.youtube.com/watch?v=MqazV4hbu8E
+[youtube] MqazV4hbu8E: Downloading webpage
+[youtube] MqazV4hbu8E: Downloading visionos player API JSON
+[youtube] MqazV4hbu8E: Downloading m3u8 information
+[info] MqazV4hbu8E: Downloading 1 format(s): 251
+[download] Destination: cancion.webm
+[download]   0.0% of    3.03MiB at  407.61KiB/s ETA 00:07[download]   0.1% of    3.03MiB at  865.34KiB/s ETA 00:03[download]   0.2% of    3.03MiB at    1.97MiB/s ETA 00:01[download]   0.5% of    3.03MiB at    3.28MiB/s ETA 00:00[download]   1.0% of    3.03MiB at    2.63MiB/s ETA 00:01[download]   2.0% of    3.03MiB at    2.58MiB/s ETA 00:01[download]   4.1% of    3.03MiB at    2.09MiB/s ETA 00:01[download]   8.2% of    3.03MiB at    2.54MiB/s ETA 00:01[download]  16.5% of    3.03MiB at    3.15MiB/s ETA 00:00[download]  33.0% of    3.03MiB at    3.87MiB/s ETA 00:00[download]  65.9% of    3.03MiB at    3.80MiB/s ETA 00:00[download] 100.0% of    3.03MiB at    2.97MiB/s ETA 00:00[download] 100% of    3.03MiB in 00:00:01 at 2.65MiB/s   
+[ExtractAudio] Destination: cancion.mp3
+Deleting original file cancion.webm (pass -k to keep)
+EXIT=0
