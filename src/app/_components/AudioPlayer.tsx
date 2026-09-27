@@ -82,7 +82,7 @@ const AudioPlayer = forwardRef<AudioAPI>(function AudioPlayer(_props, ref) {
           desde Supabase Storage y con preload="none" solo baja al dar play. */}
       <audio
         ref={audioRef}
-        src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/boda-diana-quijano-y-sebastian-ortiz/cancion.mp3"
+        src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/boda-yasareth-y-luis/cancion.mp3"
         preload="none"
       />
       <button
