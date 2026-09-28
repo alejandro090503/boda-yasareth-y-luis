@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Invitacion bilingue de Yasareth y Luis.
+ * Invitacion bilingue de Yasareth y Antonio.
  *
  * Todo el texto visible vive aqui en los dos idiomas, para que no quede ni una
  * cadena suelta a medio traducir. El idioma lo elige el invitado en la
@@ -50,7 +50,7 @@ export const T = {
 
     historiaEyebrow: "NUESTRA HISTORIA",
     historia:
-      "Con Dios como guía de nuestro camino, que escribió nuestra historia desde el inicio y después de 10 años y 9 meses de un amor que ha crecido contra todo, hoy decidimos unir nuestras vidas para siempre.",
+      "Con Dios como guía de nuestro camino, que escribió nuestra historia desde el inicio y después de 10 años de un amor que ha crecido contra todo, hoy decidimos unir nuestras vidas para siempre.",
     frase: "Cordón de tres dobleces no se rompe pronto.",
 
     faltan: "Faltan",
@@ -64,6 +64,8 @@ export const T = {
       "Mejores son dos que uno… porque si uno cayere, el otro levantará a su compañero… y cordón de tres dobleces no se rompe pronto.",
 
     padrinosEyebrow: "NUESTROS PADRINOS",
+    padrinoAnterior: "Padrinos anteriores",
+    padrinoSiguiente: "Padrinos siguientes",
     velacion: "Velación",
     anillos: "Anillos",
     arras: "Arras",
@@ -252,7 +254,7 @@ export const T = {
 
     historiaEyebrow: "OUR STORY",
     historia:
-      "With God as the guide of our path, who wrote our story from the very beginning, and after 10 years and 9 months of a love that has grown against all odds, today we choose to join our lives forever.",
+      "With God as the guide of our path, who wrote our story from the very beginning, and after 10 years of a love that has grown against all odds, today we choose to join our lives forever.",
     frase: "A cord of three strands is not quickly broken.",
 
     faltan: "Only",
@@ -266,6 +268,8 @@ export const T = {
       "Two are better than one… for if either of them falls, one can help the other up… and a cord of three strands is not quickly broken.",
 
     padrinosEyebrow: "OUR SPONSORS",
+    padrinoAnterior: "Previous sponsors",
+    padrinoSiguiente: "Next sponsors",
     velacion: "Veiling",
     anillos: "Rings",
     arras: "Arras Coins",

@@ -147,7 +147,7 @@ export default function GalleryCard() {
             >
               <div style={{ background: "#fdfdfb", padding: "10px 10px 26px", borderRadius: 3, boxShadow: "0 20px 60px rgba(0,0,0,0.6)" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={fotos[idx]} alt="Foto de Yasareth y Luis" style={{ display: "block", maxWidth: "82vw", maxHeight: "70vh", width: "auto", height: "auto", objectFit: "contain" }} />
+                <img src={fotos[idx]} alt="Foto de Yasareth y Antonio" style={{ display: "block", maxWidth: "82vw", maxHeight: "70vh", width: "auto", height: "auto", objectFit: "contain" }} />
               </div>
               <button
                 onClick={() => setLightbox(false)}

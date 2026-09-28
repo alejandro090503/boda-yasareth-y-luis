@@ -34,7 +34,7 @@ function Pie({ lang }: { lang: Lang }) {
     <footer className="text-center mt-4 mb-8">
       <div className="divider" />
       <p className="font-script mt-4 foil" style={{ fontSize: "2.2rem" }}>
-        Luis &amp; Yasareth
+        Antonio &amp; Yasareth
       </p>
       <p className="font-sans-label mt-2" style={{ color: "var(--ink-dark)", fontSize: "0.8rem", fontWeight: 600 }}>
         {DIA} &middot; {mes} &middot; {ANIO}

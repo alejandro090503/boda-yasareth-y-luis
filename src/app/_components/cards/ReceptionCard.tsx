@@ -27,10 +27,15 @@ export default function ReceptionCard() {
         </p>
       </Stagger>
 
-      {/* PENDIENTE: foto del Salon Social Diamante. El cliente la va a mandar;
-          hasta entonces la tarjeta va sin foto (no se pone una de los novios
-          ni la de otro salon). Al volver: <div className="lugar-foto mt-3">
-          con /lugares/salon.jpg */}
+      {/* PENDIENTE: foto del Salon Social Diamante. Mientras el cliente la
+          manda va el arco del set de dibujos, para que el medallon no quede
+          vacio. Al llegar la foto: quitar --dibujo y poner /lugares/salon.jpg */}
+      <Stagger>
+        <div className="lugar-foto lugar-foto--dibujo mt-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/iconos/arco.png" alt="" aria-hidden="true" />
+        </div>
+      </Stagger>
 
       <Stagger>
         <div className="flex justify-center mt-3">

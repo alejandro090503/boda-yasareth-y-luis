@@ -142,7 +142,7 @@ export default function HeroCard() {
 
             <Stagger>
               <h1 className="font-script px-2" style={{ color: "var(--olive-primary)", fontSize: "3.6rem", lineHeight: 1 }}>
-                Luis
+                Antonio
               </h1>
 
             </Stagger>

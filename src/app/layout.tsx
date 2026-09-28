@@ -27,11 +27,11 @@ const sans = Jost({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://boda-yasareth-y-luis.vercel.app"),
-  title: `Yasareth & Luis — ${FECHA_PUNTEADA}`,
+  title: `Yasareth & Antonio — ${FECHA_PUNTEADA}`,
   description:
-    `Con la bendición de Dios y de nuestras familias, Yasareth y Luis los invitan a celebrar su boda. ${FECHA_LARGA}, Guadalupe Ixcotla, Tlaxcala.`,
+    `Con la bendición de Dios y de nuestras familias, Yasareth y Antonio los invitan a celebrar su boda. ${FECHA_LARGA}, Guadalupe Ixcotla, Tlaxcala.`,
   openGraph: {
-    title: "Yasareth & Luis — Nuestra Boda",
+    title: "Yasareth & Antonio — Nuestra Boda",
     description: `${FECHA_LARGA} · Guadalupe Ixcotla, Tlaxcala`,
     type: "website",
     locale: "es_MX",

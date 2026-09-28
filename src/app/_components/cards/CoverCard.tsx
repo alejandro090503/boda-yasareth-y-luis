@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { DIA, MES, ANIO, FECHA_BODA } from "../../_data/fecha";
 import { useLang } from "../../_data/idioma";
 
 
@@ -24,7 +23,6 @@ const MASCARA =
 
 export default function CoverCard() {
   const { t } = useLang();
-  const mes = FECHA_BODA ? t.mes(FECHA_BODA.getMonth(), MES) : MES;
   const seccion = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: seccion,
@@ -99,7 +97,7 @@ export default function CoverCard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.55, duration: 1.1, ease: "easeOut" }}
         >
-          Luis
+          Antonio
         </motion.h1>
 
         <motion.p
@@ -144,26 +142,6 @@ export default function CoverCard() {
           {t.portadaNosCasamos}
         </motion.p>
 
-        <motion.div
-          className="inline-flex items-center gap-3 px-6 py-2.5"
-          style={{
-            border: "1px solid rgba(247,231,206,0.55)",
-            borderRadius: 999,
-            background: "rgba(22,50,92,0.32)",
-            backdropFilter: "blur(5px)",
-            WebkitBackdropFilter: "blur(5px)",
-          }}
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.9, ease: "easeOut" }}
-        >
-          <span
-            className="font-sans-label"
-            style={{ color: "#F3DFAE", fontSize: "clamp(0.72rem, 0.95vw, 0.92rem)", fontWeight: 600, letterSpacing: "0.26em" }}
-          >
-            {DIA} &middot; {mes} &middot; {ANIO}
-          </span>
-        </motion.div>
 
         <motion.p
           className="font-serif italic"

@@ -854,6 +854,11 @@ body::after {
   background: var(--bg-cream);
 }
 .lugar-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Cuando en vez de foto va un dibujo a mano alzada (el salon todavia no
+   tiene foto): el trazo se ve entero, con aire alrededor. */
+.lugar-foto--dibujo { border-style: dashed; border-color: rgba(138,92,19,0.42); }
+.lugar-foto--dibujo img { object-fit: contain; padding: 9px; opacity: 1; }
+@media (min-width: 900px) { .lugar-foto--dibujo img { padding: 34px; } }
 @media (min-width: 900px) {
   .lugar-foto { width: 208px; height: 208px; }
 }
