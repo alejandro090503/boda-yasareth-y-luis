@@ -2,6 +2,7 @@
 
 import AnimatedCard, { Stagger } from "../AnimatedCard";
 import { OliveBranch } from "../Ornaments";
+import SalonIlustracion from "../SalonIlustracion";
 import { useLang } from "../../_data/idioma";
 
 
@@ -32,8 +33,7 @@ export default function ReceptionCard() {
           vacio. Al llegar la foto: quitar --dibujo y poner /lugares/salon.jpg */}
       <Stagger>
         <div className="lugar-foto lugar-foto--dibujo mt-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/iconos/arco.png" alt="" aria-hidden="true" />
+          <SalonIlustracion />
         </div>
       </Stagger>
 

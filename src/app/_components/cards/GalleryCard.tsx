@@ -6,7 +6,9 @@ import AnimatedCard, { Stagger } from "../AnimatedCard";
 import { useLang } from "../../_data/idioma";
 
 
-const fotos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => `/galeria/g${n}.jpg`);
+/* 19 fotos en orden cronologico: de novios jovenes a la sesion de compromiso.
+   El orden lo propuso `cronologia.py`; la clienta lo confirma o lo corrige. */
+const fotos = Array.from({ length: 19 }, (_, i) => `/galeria/g${i + 1}.jpg`);
 
 export default function GalleryCard() {
   const { t } = useLang();
@@ -94,7 +96,7 @@ export default function GalleryCard() {
 
         {/* Indicadores (dots) */}
         <Stagger>
-          <div className="flex items-center justify-center gap-1.5 mt-4">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 mt-4 mx-auto" style={{ maxWidth: 300, rowGap: 7 }}>
             {fotos.map((_, i) => (
               <button
                 key={i}
