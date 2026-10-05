@@ -193,7 +193,7 @@ export default function GiftsCard() {
                 {/* el monograma va en marino, no en oro: sobre el baby blue del
                     sello el dorado se perdia */}
                 <text x="30" y="38.5" textAnchor="middle" fontFamily="var(--font-script), cursive" fontSize="25" fill="#16325C">
-                  S&amp;A
+                  A&amp;Y
                 </text>
               </svg>
             </div>

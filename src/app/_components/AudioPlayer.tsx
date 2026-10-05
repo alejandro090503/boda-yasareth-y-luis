@@ -100,7 +100,7 @@ const AudioPlayer = forwardRef<AudioAPI>(function AudioPlayer(_props, ref) {
           <div className="vinyl-disc">
             <div className="vinyl-sheen" />
             <div className="vinyl-label-text">
-              S&amp;A<small>2026</small>
+              A&amp;Y<small>2026</small>
             </div>
             <div className="vinyl-hole" />
           </div>

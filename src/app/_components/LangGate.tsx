@@ -8,7 +8,7 @@ import type { Lang } from "../_data/idioma";
  *
  * Usa la misma estetica que el resto: marmol azul de fondo, tarjeta de papel
  * marfil con el marco doble (filete de champan por fuera, hairline azul por
- * dentro) y el monograma S&A en caligrafia.
+ * dentro) y el monograma A&Y en caligrafia.
  *
  * Cada opcion se escribe en SU idioma ("Espanol" / "English"): un invitado que
  * solo habla ingles debe poder reconocer la suya sin leer la otra.
@@ -61,7 +61,7 @@ export default function LangGate({ onPick }: { onPick: (l: Lang) => void }) {
         />
 
         <p className="font-script foil" style={{ fontSize: "3.1rem", lineHeight: 1 }}>
-          S &amp; A
+          A &amp; Y
         </p>
 
         <div className="foil-rule" style={{ width: 84, margin: "1rem auto 1.25rem" }} />
