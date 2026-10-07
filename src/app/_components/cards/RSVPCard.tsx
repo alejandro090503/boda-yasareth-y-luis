@@ -8,8 +8,8 @@ import { useLang } from "../../_data/idioma";
 
 const PANEL_API = "https://panel-invitados.vercel.app/api/confirmar";
 const RSVP_URL = "https://boda-yasareth-y-luis.vercel.app";
-/* Fecha límite de confirmación: 12 de octubre de 2026 (coincide con el texto del pie). */
-const DEADLINE = new Date(2026, 9, 12, 23, 59, 59, 999);
+/* Fecha límite de confirmación: 5 de diciembre de 2026 (coincide con t.limite). */
+const DEADLINE = new Date(2026, 11, 5, 23, 59, 59, 999);
 
 const EASE = [0.22, 0.61, 0.36, 1] as const;
 
