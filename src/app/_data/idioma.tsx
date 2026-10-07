@@ -192,8 +192,22 @@ export const T = {
     rsvpAgregarPase: "Agregar un pase",
     rsvpTuNombre: "Tu nombre completo",
     rsvpNombreN: (i: number) => `Nombre del invitado ${i}`,
+    rsvpNombreMenor: (i: number) => `Nombre del menor ${i}`,
+    rsvpAdultosMenores: (a: number, m: number) =>
+      `${a} ${a === 1 ? "adulto" : "adultos"} + ${m} ${m === 1 ? "menor" : "menores"}`,
+    rsvpNotaMenores: (m: number) =>
+      m === 1
+        ? "También tienes 1 pase para un menor. Súmalo si asistirá."
+        : `También tienes ${m} pases para menores. Aumenta el número de menores que asistirán.`,
+    rsvpDeMenores: (usa: number, total: number) =>
+      `${usa} de ${total} ${total === 1 ? "pase de menor" : "pases de menores"}`,
+    rsvpQuitarMenor: "Quitar un menor",
+    rsvpMenorCorto: "menor",
+    rsvpAgregarMenor: "Agregar un menor",
     rsvpElige: "Por favor selecciona si asistirás o no.",
     rsvpUnNombre: "Por favor escribe al menos un nombre.",
+    rsvpUnoPorCampo: "Escribe un solo nombre en cada campo. Si vienen más personas, sube el contador y escribe cada nombre en su propio campo.",
+    errNoEncontrada: "No encontramos tu invitación. Pide a los novios que te envíen tu enlace de nuevo.",
     rsvpFaltan: (usa: number, escritos: number, faltan: number) =>
       `Elegiste ${usa} pases pero escribiste ${escritos} nombre${escritos === 1 ? "" : "s"}. ` +
       `Escribe ${faltan === 1 ? "el nombre que falta" : `los ${faltan} nombres que faltan`} ` +
@@ -396,8 +410,22 @@ export const T = {
     rsvpAgregarPase: "Add a seat",
     rsvpTuNombre: "Your full name",
     rsvpNombreN: (i: number) => `Guest ${i} full name`,
+    rsvpNombreMenor: (i: number) => `Child ${i} full name`,
+    rsvpAdultosMenores: (a: number, m: number) =>
+      `${a} ${a === 1 ? "adult" : "adults"} + ${m} ${m === 1 ? "child" : "children"}`,
+    rsvpNotaMenores: (m: number) =>
+      m === 1
+        ? "You also have 1 seat for a child. Add it if they will attend."
+        : `You also have ${m} seats for children. Raise the number of children who will attend.`,
+    rsvpDeMenores: (usa: number, total: number) =>
+      `${usa} of ${total} ${total === 1 ? "child seat" : "child seats"}`,
+    rsvpQuitarMenor: "Remove a child",
+    rsvpMenorCorto: "child",
+    rsvpAgregarMenor: "Add a child",
     rsvpElige: "Please choose whether you will attend.",
     rsvpUnNombre: "Please write at least one name.",
+    rsvpUnoPorCampo: "Write only one name per field. If more people are coming, raise the counter and write each name in its own field.",
+    errNoEncontrada: "We couldn't find your invitation. Ask the couple to send you your link again.",
     rsvpFaltan: (usa: number, escritos: number, faltan: number) =>
       `You chose ${usa} seats but wrote ${escritos} name${escritos === 1 ? "" : "s"}. ` +
       `Write the missing name${faltan === 1 ? "" : "s"} ` +

@@ -16,19 +16,30 @@ const EASE = [0.22, 0.61, 0.36, 1] as const;
 /* WhatsApp y Messenger cortan la URL en el primer espacio o "&". El panel manda
    un token base64url en ?i= ("nombre|pases|menores") que llega intacto.
    Se conserva ?para=&pases= para los links ya enviados. */
-function decodeInvite(tok: string): { nombre: string; pases: number } {
+function decodeInvite(tok: string): { nombre: string; pases: number; menores: number } {
   try {
     let b64 = tok.replace(/-/g, "+").replace(/_/g, "/");
     while (b64.length % 4) b64 += "=";
     const bin = atob(b64);
     const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
-    const [nombre, pases] = new TextDecoder().decode(bytes).split("|");
+    const [nombre, pases, menores] = new TextDecoder().decode(bytes).split("|");
     const n = parseInt(pases ?? "1", 10);
-    return { nombre: (nombre ?? "").trim(), pases: isNaN(n) || n < 1 || n > 20 ? 1 : n };
+    const m = parseInt(menores ?? "0", 10);
+    return {
+      nombre: (nombre ?? "").trim(),
+      pases: isNaN(n) || n < 1 || n > 20 ? 1 : n,
+      menores: isNaN(m) || m < 0 || m > 20 ? 0 : m,
+    };
   } catch {
-    return { nombre: "", pases: 1 };
+    return { nombre: "", pases: 1, menores: 0 };
   }
 }
+
+/* El panel guarda a los menores con la marca " (Menor)" para distinguirlos */
+const MARCA_MENOR = " (Menor)";
+const esMenor = (n: string) => /\(menor\)\s*$/i.test(String(n || ""));
+const sinMarca = (n: string) => String(n || "").replace(/\s*\(menor\)\s*$/i, "");
+const dobleNombre = (n: string) => /[&\/+,]|\s(y|and)\s/i.test((n || "").trim());
 
 export default function RSVPCard() {
   const { t } = useLang();
@@ -41,6 +52,11 @@ export default function RSVPCard() {
     const n = parseInt(searchParams.get("pases") ?? "1", 10);
     return isNaN(n) || n < 1 || n > 20 ? 1 : n;
   })();
+  const menoresUrl = (() => {
+    if (desdeToken) return desdeToken.menores;
+    const m = parseInt(searchParams.get("menores") ?? "0", 10);
+    return isNaN(m) || m < 0 || m > 20 ? 0 : m;
+  })();
 
   const frozen = Date.now() > DEADLINE.getTime();
   /* Tope: los pases que los novios asignaron en el panel */
@@ -48,6 +64,11 @@ export default function RSVPCard() {
   /* Lo que el invitado va a ocupar: arranca en 1 y nunca pasa del tope */
   const [pasesAUsar, setPasesAUsar] = useState(1);
   const [nombres, setNombres] = useState<string[]>([]);
+  /* Pases para menores: contador propio que arranca en 0 */
+  const [pasesMenores, setPasesMenores] = useState(menoresUrl);
+  const [menoresAUsar, setMenoresAUsar] = useState(0);
+  const [nombresMenores, setNombresMenores] = useState<string[]>([]);
+  const [faltanMenores, setFaltanMenores] = useState<number[]>([]);
   const [choice, setChoice] = useState<"yes" | "no" | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [gateLoading, setGateLoading] = useState(!!urlPara);
@@ -68,17 +89,35 @@ export default function RSVPCard() {
       .then((r) => r.json())
       .then((resp) => {
         const d = resp?.invitado;
+        /* Si el panel no tiene este nombre no se deja confirmar: el envío
+           crearía una invitación nueva y los contadores dejarían de cuadrar. */
+        if (!d) {
+          setBloqueada(true);
+          setFeedbackKind("warn");
+          setFeedback(t.errNoEncontrada);
+          setBtnLabel(t.rsvpNoDisponible);
+          return;
+        }
         const tope = typeof d?.pases === "number" && d.pases > 0 && d.pases <= 20 ? d.pases : pasesUrl;
         setPasesAsignados(tope);
+        const topeMenores =
+          typeof d.pases_menores === "number" && d.pases_menores >= 0 && d.pases_menores <= 20
+            ? d.pases_menores
+            : menoresUrl;
+        setPasesMenores(topeMenores);
         if (d?.bloqueado) setBloqueada(true);
 
         if (d && (d.estado === "confirmado" || d.estado === "declino")) {
           const guardados: string[] = (d.nombres_confirmados || []).filter(
             (n: string) => n && String(n).trim()
           );
-          /* El contador arranca en cuántos pases había ocupado antes */
-          setPasesAUsar(Math.min(tope, Math.max(1, guardados.length)));
-          setNombres(guardados);
+          const adultos = guardados.filter((n) => !esMenor(n));
+          const menores = guardados.filter(esMenor).map(sinMarca);
+          /* Los contadores arrancan en cuántos pases había ocupado antes */
+          setPasesAUsar(Math.min(tope, Math.max(1, adultos.length)));
+          setMenoresAUsar(Math.min(topeMenores, menores.length));
+          setNombres(adultos);
+          setNombresMenores(menores);
           setChoice(d.estado === "confirmado" ? "yes" : "no");
           setBtnLabel(t.rsvpActualizar);
           /* Con respuesta ya guardada, la sección arranca CERRADA. */
@@ -103,6 +142,24 @@ export default function RSVPCard() {
     setFeedback("");
   };
 
+  const setMenores = (n: number) => {
+    if (frozen || bloqueada) return;
+    const v = Math.max(0, Math.min(pasesMenores, n));
+    if (v === menoresAUsar) return;
+    setMenoresAUsar(v);
+    setFaltanMenores([]);
+    setFeedback("");
+  };
+
+  const escribirMenor = (i: number, v: string) => {
+    setNombresMenores((prev) => {
+      const copia = prev.slice();
+      copia[i] = v;
+      return copia;
+    });
+    setFaltanMenores((prev) => prev.filter((x) => x !== i));
+  };
+
   const escribirNombre = (i: number, v: string) => {
     setNombres((prev) => {
       const copia = prev.slice();
@@ -116,6 +173,7 @@ export default function RSVPCard() {
     if (frozen || bloqueada) return;
     setChoice(v);
     setFaltantes([]);
+    setFaltanMenores([]);
     setFeedback("");
   };
 
@@ -130,6 +188,10 @@ export default function RSVPCard() {
 
     const asisten = choice === "yes" ? nombres.slice(0, pasesAUsar).map((n) => (n || "").trim()) : [];
     const escritos = asisten.filter(Boolean);
+    const menores = choice === "yes" ? nombresMenores.slice(0, menoresAUsar).map((n) => sinMarca((n || "").trim())) : [];
+    const menoresEscritos = menores.filter(Boolean);
+    const totalAUsar = pasesAUsar + menoresAUsar;
+    const totalEscritos = escritos.length + menoresEscritos.length;
 
     if (choice === "yes") {
       if (escritos.length === 0) {
@@ -137,19 +199,36 @@ export default function RSVPCard() {
         setFeedback(t.rsvpUnNombre);
         return;
       }
-      if (escritos.length < pasesAUsar) {
+      /* Un nombre por campo: "Ana y Luis" en un campo descuadra el panel */
+      const dobles: number[] = [];
+      for (let i = 0; i < pasesAUsar; i++) if (dobleNombre(nombres[i])) dobles.push(i);
+      const doblesMen: number[] = [];
+      for (let i = 0; i < menoresAUsar; i++) if (dobleNombre(nombresMenores[i])) doblesMen.push(i);
+      if (dobles.length || doblesMen.length) {
+        setFaltantes(dobles);
+        setFaltanMenores(doblesMen);
+        setFeedbackKind("warn");
+        setFeedback(t.rsvpUnoPorCampo);
+        feedRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        return;
+      }
+      if (totalEscritos < totalAUsar) {
         /* Se marcan los campos vacíos para que se note cuál falta */
         const vacios: number[] = [];
         for (let i = 0; i < pasesAUsar; i++) if (!(nombres[i] || "").trim()) vacios.push(i);
+        const vaciosMen: number[] = [];
+        for (let i = 0; i < menoresAUsar; i++) if (!(nombresMenores[i] || "").trim()) vaciosMen.push(i);
         setFaltantes(vacios);
+        setFaltanMenores(vaciosMen);
         setFeedbackKind("warn");
-        setFeedback(t.rsvpFaltan(pasesAUsar, escritos.length, pasesAUsar - escritos.length));
+        setFeedback(t.rsvpFaltan(totalAUsar, totalEscritos, totalAUsar - totalEscritos));
         feedRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
         return;
       }
     }
 
     const estado = choice === "yes" ? "confirmado" : "declino";
+    const enviados = [...escritos, ...menoresEscritos.map((n) => n + MARCA_MENOR)];
     setEnviando(true);
     setBtnLabel(t.rsvpEnviando);
     setFeedback("");
@@ -161,8 +240,8 @@ export default function RSVPCard() {
           nombre: urlPara,
           url_boda: RSVP_URL,
           estado,
-          pases_confirmados: estado === "confirmado" ? escritos.length : 0,
-          nombres_confirmados: estado === "confirmado" ? escritos : [],
+          pases_confirmados: estado === "confirmado" ? enviados.length : 0,
+          nombres_confirmados: estado === "confirmado" ? enviados : [],
         }),
       });
       const data = await res.json().catch(() => null);
@@ -191,7 +270,7 @@ export default function RSVPCard() {
       }
 
       setBtnLabel(t.rsvpActualizar);
-      setResumen({ estado: choice, nombres: escritos });
+      setResumen({ estado: choice, nombres: enviados });
       setCerrada(true);
       setFeedback("");
     } catch {
@@ -224,11 +303,14 @@ export default function RSVPCard() {
       return { titulo: t.rsvpGraciasNo, sub: t.rsvpGraciasNoSub };
     }
     if (resumen.nombres.length === 1) {
-      return { titulo: t.rsvpGraciasSi, sub: t.rsvpEsperamos(resumen.nombres[0]) };
+      return { titulo: t.rsvpGraciasSi, sub: t.rsvpEsperamos(sinMarca(resumen.nombres[0])) };
     }
     return {
       titulo: t.rsvpGraciasSi,
-      sub: t.rsvpConfirmados(resumen.nombres.length, resumen.nombres.join(", ")),
+      sub: t.rsvpConfirmados(
+        resumen.nombres.length,
+        resumen.nombres.map((n) => (esMenor(n) ? `${sinMarca(n)} (${t.rsvpMenorCorto})` : n)).join(", ")
+      ),
     };
   })();
 
@@ -278,8 +360,15 @@ export default function RSVPCard() {
             <p className="font-serif" style={{ color: "var(--ink-dark)", fontSize: "1.2rem", lineHeight: 1.5 }}>
               {t.rsvpTienes}{" "}
               <span className="font-semibold" style={{ color: "var(--olive-primary)" }}>
-                {pasesAsignados} {pasesAsignados === 1 ? t.rsvpPase : t.rsvpPases}
+                {pasesMenores > 0
+                  ? `${pasesAsignados + pasesMenores} ${t.rsvpPases}`
+                  : `${pasesAsignados} ${pasesAsignados === 1 ? t.rsvpPase : t.rsvpPases}`}
               </span>
+              {pasesMenores > 0 && (
+                <span className="block" style={{ fontSize: "1rem", opacity: 0.85 }}>
+                  ({t.rsvpAdultosMenores(pasesAsignados, pasesMenores)})
+                </span>
+              )}
               <br />
               {t.rsvpPara}{" "}
               <span className="font-script" style={{ color: "var(--olive-primary)", fontSize: "1.8rem" }}>
@@ -498,6 +587,86 @@ export default function RSVPCard() {
                       </>
                     )}
 
+                    {pasesMenores > 0 && (
+                      <div className="mt-5">
+                        <p
+                          className="font-serif italic mx-auto mb-3"
+                          style={{ color: "var(--ink-dark)", fontSize: "1.05rem", lineHeight: 1.55 }}
+                        >
+                          {t.rsvpNotaMenores(pasesMenores)}
+                        </p>
+                        <div
+                          className="flex items-center justify-center gap-5 mx-auto mb-2 px-4 py-3"
+                          style={{
+                            background: "rgba(31,28,25,0.06)",
+                            border: "1px solid var(--beige)",
+                            borderRadius: 14,
+                          }}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => setMenores(menoresAUsar - 1)}
+                            disabled={cerradoTodo || menoresAUsar <= 0}
+                            aria-label={t.rsvpQuitarMenor}
+                            className="font-serif transition-all disabled:opacity-35 disabled:cursor-not-allowed"
+                            style={{
+                              width: 46,
+                              height: 46,
+                              flexShrink: 0,
+                              borderRadius: "50%",
+                              border: "1.5px solid var(--beige)",
+                              background: "rgba(255,253,249,0.8)",
+                              color: "var(--olive-primary)",
+                              fontSize: "1.6rem",
+                              lineHeight: 1,
+                              cursor: "pointer",
+                            }}
+                          >
+                            −
+                          </button>
+                          <span
+                            className="font-script"
+                            aria-live="polite"
+                            style={{ color: "var(--olive-primary)", fontSize: "2.6rem", lineHeight: 1, minWidth: 58 }}
+                          >
+                            {menoresAUsar}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setMenores(menoresAUsar + 1)}
+                            disabled={cerradoTodo || menoresAUsar >= pasesMenores}
+                            aria-label={t.rsvpAgregarMenor}
+                            className="font-serif transition-all disabled:opacity-35 disabled:cursor-not-allowed"
+                            style={{
+                              width: 46,
+                              height: 46,
+                              flexShrink: 0,
+                              borderRadius: "50%",
+                              border: "1.5px solid var(--beige)",
+                              background: "rgba(255,253,249,0.8)",
+                              color: "var(--olive-primary)",
+                              fontSize: "1.6rem",
+                              lineHeight: 1,
+                              cursor: "pointer",
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                        <p
+                          className="font-sans-label"
+                          style={{
+                            color: "var(--olive-primary)",
+                            fontSize: "0.78rem",
+                            letterSpacing: "0.2em",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {t.rsvpDeMenores(menoresAUsar, pasesMenores)}
+                        </p>
+                      </div>
+                    )}
+
                     <div className="space-y-2 mt-4">
                       {Array.from({ length: pasesAUsar }, (_, i) => (
                         <input
@@ -505,8 +674,8 @@ export default function RSVPCard() {
                           type="text"
                           value={nombres[i] || ""}
                           onChange={(e) => escribirNombre(i, e.target.value)}
-                          placeholder={pasesAUsar === 1 ? t.rsvpTuNombre : t.rsvpNombreN(i + 1)}
-                          aria-label={pasesAUsar === 1 ? t.rsvpTuNombre : t.rsvpNombreN(i + 1)}
+                          placeholder={pasesAUsar === 1 && menoresAUsar === 0 ? t.rsvpTuNombre : t.rsvpNombreN(i + 1)}
+                          aria-label={pasesAUsar === 1 && menoresAUsar === 0 ? t.rsvpTuNombre : t.rsvpNombreN(i + 1)}
                           autoComplete="off"
                           maxLength={60}
                           disabled={cerradoTodo}
@@ -514,6 +683,29 @@ export default function RSVPCard() {
                           style={{
                             padding: "13px 16px",
                             border: `1.5px solid ${faltantes.includes(i) ? "var(--terracotta)" : "var(--beige)"}`,
+                            background: "rgba(255,253,249,0.75)",
+                            color: "var(--ink-dark)",
+                            fontSize: "1.05rem",
+                            borderRadius: 12,
+                            outline: "none",
+                          }}
+                        />
+                      ))}
+                      {Array.from({ length: menoresAUsar }, (_, i) => (
+                        <input
+                          key={`m-${i}`}
+                          type="text"
+                          value={nombresMenores[i] || ""}
+                          onChange={(e) => escribirMenor(i, e.target.value)}
+                          placeholder={t.rsvpNombreMenor(i + 1)}
+                          aria-label={t.rsvpNombreMenor(i + 1)}
+                          autoComplete="off"
+                          maxLength={60}
+                          disabled={cerradoTodo}
+                          className="w-full font-serif disabled:opacity-60"
+                          style={{
+                            padding: "13px 16px",
+                            border: `1.5px solid ${faltanMenores.includes(i) ? "var(--terracotta)" : "var(--beige)"}`,
                             background: "rgba(255,253,249,0.75)",
                             color: "var(--ink-dark)",
                             fontSize: "1.05rem",
