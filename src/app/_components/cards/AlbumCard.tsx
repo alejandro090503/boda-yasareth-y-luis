@@ -12,6 +12,8 @@ import { useLang } from "../../_data/idioma";
  */
 const FECHA_ALBUM = "2026-12-26";
 
+const HASHTAG = "#YasarethyLuis2026";
+
 export default function AlbumCard() {
   const { t } = useLang();
   const [bloqueado, setBloqueado] = useState(false);
@@ -109,16 +111,24 @@ export default function AlbumCard() {
         </div>
       </Stagger>
 
+      {/* Sin <Stagger>: el aviso se monta DESPUÉS del primer render (bloqueado
+          se calcula en un efecto) y los hijos tardíos de Stagger se quedan en
+          opacity:0 porque su disparo por scroll ya pasó. */}
       {bloqueado && (
-        <Stagger>
-          <p
-            className="album-aviso font-serif italic mx-auto px-2 mt-4"
-            style={{ color: "var(--ink-dark)", fontSize: "1.1rem", lineHeight: 1.6, maxWidth: "300px" }}
-          >
-            {t.albumAviso}
-          </p>
-        </Stagger>
+        <p
+          className="album-aviso font-serif italic mx-auto px-2 mt-4"
+          style={{ color: "var(--ink-dark)", fontSize: "1.1rem", lineHeight: 1.6, maxWidth: "300px" }}
+        >
+          {t.albumAviso}
+        </p>
       )}
+
+      {/* Hashtag de Instagram: se conserva junto al álbum */}
+      <Stagger>
+        <p className="font-script mt-4 foil" style={{ fontSize: "1.9rem", lineHeight: 1.2 }}>
+          {HASHTAG}
+        </p>
+      </Stagger>
     </AnimatedCard>
   );
 }
