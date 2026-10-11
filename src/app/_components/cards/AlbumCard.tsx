@@ -1,26 +1,25 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import AnimatedCard, { Stagger } from "../AnimatedCard";
 import { OliveBranch } from "../Ornaments";
 import { useLang } from "../../_data/idioma";
 
-
 /**
- * QR para que los invitados suban sus fotos al album compartido.
- *
- * PENDIENTE: el enlace real del album (Google Fotos / Drive). Mientras el
- * cliente no lo mande, el QR apunta al hashtag de Instagram, que al menos
- * lleva a un sitio valido en vez de a un enlace roto.
+ * Album de fotos estandar de Elysium: el QR (public/qr-album.png) abre /album,
+ * que vercel.json redirige a panel-invitados.vercel.app/subir/yasareth-y-luis.
+ * El album se habilita el dia del evento (la base ademas rechaza fotos antes).
  */
-const ALBUM_URL = "https://www.instagram.com/explore/tags/YasarethyLuis2026";
-const HASHTAG = "#YasarethyLuis2026";
-
-const QR =
-  "https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&color=16325C&bgcolor=FFFFFF&data=" +
-  encodeURIComponent(ALBUM_URL);
+const FECHA_ALBUM = "2026-12-26";
 
 export default function AlbumCard() {
   const { t } = useLang();
+  const [bloqueado, setBloqueado] = useState(false);
+  useEffect(() => {
+    // Se desbloquea solo el dia del evento
+    const [y, m, d] = FECHA_ALBUM.split("-").map(Number);
+    setBloqueado(new Date() < new Date(y, m - 1, d, 0, 0, 0));
+  }, []);
   return (
     <AnimatedCard className="tex-beige text-center py-9" anim="slideLeft">
       <Stagger>
@@ -54,11 +53,12 @@ export default function AlbumCard() {
       </Stagger>
 
       <Stagger>
-        <div className="flex justify-center mt-5">
-          <a
-            href={ALBUM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+        <div
+          className={"album-qr flex flex-col items-center mt-5" + (bloqueado ? " bloqueado" : "")}
+          data-fecha={FECHA_ALBUM}
+          style={{ gap: 16 }}
+        >
+          <div
             style={{
               display: "block",
               padding: 14,
@@ -70,21 +70,55 @@ export default function AlbumCard() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={QR}
-              alt={`${t.albumQrAlt} ${HASHTAG}`}
+              src="/qr-album.png"
+              alt={t.albumQrAlt}
               width={168}
               height={168}
-              style={{ display: "block", width: 168, height: 168 }}
+              style={{
+                display: "block",
+                width: 168,
+                height: 168,
+                filter: bloqueado ? "blur(7px)" : "none",
+                opacity: bloqueado ? 0.75 : 1,
+              }}
             />
+          </div>
+          <a
+            className="album-btn font-sans-label"
+            href="/album"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 46,
+              padding: "12px 30px",
+              borderRadius: 999,
+              border: "1px solid var(--olive-primary)",
+              backgroundColor: "var(--olive-primary)",
+              color: "#FFFFFF",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              textDecoration: "none",
+              boxShadow: "0 8px 22px rgba(22,32,46,0.16)",
+              pointerEvents: bloqueado ? "none" : "auto",
+              opacity: bloqueado ? 0.45 : 1,
+            }}
+          >
+            {t.albumBtn}
           </a>
         </div>
       </Stagger>
 
-      <Stagger>
-        <p className="font-script mt-4 foil" style={{ fontSize: "1.9rem", lineHeight: 1.2 }}>
-          {HASHTAG}
-        </p>
-      </Stagger>
+      {bloqueado && (
+        <Stagger>
+          <p
+            className="album-aviso font-serif italic mx-auto px-2 mt-4"
+            style={{ color: "var(--ink-dark)", fontSize: "1.1rem", lineHeight: 1.6, maxWidth: "300px" }}
+          >
+            {t.albumAviso}
+          </p>
+        </Stagger>
+      )}
     </AnimatedCard>
   );
 }

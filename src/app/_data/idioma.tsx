@@ -172,8 +172,10 @@ export const T = {
 
     albumEyebrow: "COMPARTE TUS MOMENTOS",
     albumTitulo: "Álbum de fotos",
-    albumSub: "Escanea el código y sube las fotos que tomes ese día: queremos verlo todo desde sus ojos.",
+    albumSub: "Ayúdanos a guardar cada momento: sube aquí las fotos que tomes durante el evento.",
     albumQrAlt: "Código QR del álbum de fotos",
+    albumBtn: "SUBIR MIS FOTOS",
+    albumAviso: "El álbum de fotos se habilita el día del evento. Regresa aquí y sube todas tus fotos de la noche ✨",
 
     rsvpTitulo: "Confirmación",
     rsvpSub: "Nos encantaría celebrar contigo",
@@ -390,8 +392,10 @@ export const T = {
 
     albumEyebrow: "SHARE YOUR MOMENTS",
     albumTitulo: "Photo album",
-    albumSub: "Scan the code and upload the photos you take that day: we want to see it all through your eyes.",
+    albumSub: "Help us keep every moment: upload here the photos you take during the event.",
     albumQrAlt: "QR code for the photo album",
+    albumBtn: "UPLOAD MY PHOTOS",
+    albumAviso: "The photo album opens on the day of the event. Come back here and upload all your photos from the night ✨",
 
     rsvpTitulo: "RSVP",
     rsvpSub: "We would love to celebrate with you",
